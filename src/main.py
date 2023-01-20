@@ -1,5 +1,6 @@
 import discord
 import os
+import scraper
 
 tokenFile = open(os.environ.get('TOKEN'), 'r')
 
@@ -30,6 +31,16 @@ async def on_message(message):
 
     if message.content.lower() == '#ping':
         await message.channel.send(f'Wow, how original...')
+        return
+
+    if message.content.lower()[:7] == '#search':
+        await message.channel.send(f'Searching for class # {message.content.lower()[8:]}...')
+
+        if scraper.scrape(f'https://catalog.apps.asu.edu/catalog/classes/classlist?advanced=true&campusOrOnlineSelection=C&classNbr={message.content.lower()[8:]}&honors=F&promod=F&searchType=open&term=2231') == 1:
+            await message.channel.send(f'Class {message.content.lower()[8:]} has seats!!!')
+            return
+        
+        await message.channel.send(f'The class you requested has no seats in it :(')
         return
 
         
