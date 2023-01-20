@@ -8,7 +8,7 @@ RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.30.0/geckod
     tar zxvf geckodriver-v0.30.0-linux32.tar.gz && \
     cp geckodriver /usr/local/bin/
 
-RUN pip install -U discord.py selenium requests lxml
+RUN pip install -U discord.py selenium requests lxml mysql-connector-python
 
 WORKDIR /usr/src/bot
 
