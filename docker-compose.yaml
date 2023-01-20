@@ -7,10 +7,23 @@ services:
       - token
     environment: 
       TOKEN: /run/secrets/token
-      DUMMY: Stuff
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: db
+      MYSQL_ROOT_PASSWORD: /run/secrets/sql_root_pw
+    ports:
+      - 6603:3306
+    volumes:
+      - my-db:/var/lib/mysql
+      
+volumes:
+  my-db:
 
 secrets:
   token:
+    external: true
+  sql_root_pw:
     external: true
 
   
