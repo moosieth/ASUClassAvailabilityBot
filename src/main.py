@@ -1,6 +1,7 @@
 import discord
 import os
 import scraper
+import dbhelper
 
 tokenFile = open(os.environ.get('TOKEN'), 'r')
 
@@ -21,6 +22,10 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+    if dbhelper.checkUserExists(message.author) == False:
+        await message.channel.send(f"Hi, {message.author.mention}! It looks like it's your first time using our bot. Welcome!")
+        dbhelper.addUser(message.author)
+
     if message.content.lower() == 'hello':
         await message.channel.send(f'Hello, {message.author.mention}!')
         return
@@ -34,13 +39,9 @@ async def on_message(message):
         return
 
     if message.content.lower()[:7] == '#search':
-        await message.channel.send(f'Searching for class # {message.content.lower()[8:]}...')
+        scrapeResult = scraper.scrape_class(f'https://catalog.apps.asu.edu/catalog/classes/classlist?advanced=true&campusOrOnlineSelection=C&classNbr={message.content.lower()[8:]}&honors=F&promod=F&searchType=open&term=2231')
+        await message.channel.send(embed=scrapeResult)
 
-        if scraper.scrape(f'https://catalog.apps.asu.edu/catalog/classes/classlist?advanced=true&campusOrOnlineSelection=C&classNbr={message.content.lower()[8:]}&honors=F&promod=F&searchType=open&term=2231') == 1:
-            await message.channel.send(f'Class {message.content.lower()[8:]} has seats!!!')
-            return
-        
-        await message.channel.send(f'The class you requested has no seats in it :(')
         return
 
         
